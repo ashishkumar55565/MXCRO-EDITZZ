@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MXCRO EDITZ | Premium Hub</title>
+    <style>
+        :root {
+            --primary: #ff0055;
+            --bg: #050505;
+            --card: #121212;
+            --text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Premium Glow Background */
+        .glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -10%, #400016 0%, #050505 80%);
+            z-index: -1;
+        }
+
+        header {
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            letter-spacing: 10px;
+            background: linear-gradient(to right, #fff, var(--primary), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 85, 0.5));
+        }
+
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+
+        /* Host Section */
+        .host-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 40px;
+            gap: 10px;
+        }
+
+        .input-box {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-host { background: var(--primary); color: white; }
+        .btn-exit { background: #333; color: white; }
+
+        /* App Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.4s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(255, 0, 85, 0.2);
+        }
+
+        .dl-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 40px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+        }
+
+        .dl-btn:hover { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
+
+        /* Admin UI */
+        .edit-box { display: none; margin-top: 20px; text-align: left; background: #000; padding: 15px; border-radius: 10px; }
+        .edit-box input { width: 90%; margin-bottom: 10px; }
+        
+        .is-admin .edit-box { display: block; }
+        .is-admin .dl-btn { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<header>
+    <h1>MXCRO EDITZ</h1>
+    <p style="color: #888; letter-spacing: 4px;">PREMIUM REPOSITORY</p>
+</header>
+
+<div class="container">
+    <div class="host-area">
+        <div id="loginSection">
+            <input type="password" id="passInput" class="input-box" placeholder="Password">
+            <button class="btn btn-host" onclick="login()">Host Login</button>
+        </div>
+        <button id="exitBtn" class="btn btn-exit" style="display:none;" onclick="logout()">Exit Host</button>
+    </div>
+
+    <div class="grid" id="appGrid"></div>
+</div>
+
+<script>
+    // Ye aapki default details hain jo pehli baar dikhengi
+    const defaultApps = [
+        { id: 1, name: "Capcut Pro", link: "https://arolinks.com/o2fQtg" },
+        { id: 2, name: "Kinemaster Pro", link: "https://go.arlinks.in/4gxW4XTy" },
+        { id: 3, name: "Lightroom Pro", link: "https://arolinks.com/CwNS" },
+        { id: 4, name: "Filmora Pro", link: "https://arolinks.com/tdV" },
+        { id: 5, name: "Spotify Pro", link: "https://arolinks.com/LBUrJ" },
+        { id: 6, name: "Inshot Pro", link: "https://arolinks.com/yR8cy" },
+        { id: 7, name: "Picsart Pro", link: "https://arolinks.com/camm" },
+        { id: 8, name: "Vmake Pro", link: "https://arolinks.com/DuIEyt" },
+        { id: 9, name: "Remini Pro", link: "https://arolinks.com/sSsUI" },
+        { id: 10, name: "Truecaller Pro", link: "https://arolinks.com/mNbu9" },
+        { id: 11, name: "Sony Liv Pro", link: "https://arolinks.com/n0N" },
+        { id: 12, name: "VN Pro", link: "https://arolinks.com/o9Yc" },
+        { id: 13, name: "Panda VPN Pro", link: "https://go.arlinks.in/F23di" },
+        { id: 14, name: "Jio Hotstar Pro", link: "https://arolinks.com/8LB20" },
+        { id: 15, name: "Playit Pro", link: "https://arolinks.com/Ro6A3" },
+        { id: 16, name: "Crunchyroll Pro", link: "https://arolinks.com/n9K5" },
+        { id: 17, name: "Netflix Pro", link: "https://go.arlinks.in/AqAvmSA" },
+        { id: 18, name: "Canva Pro", link: "https://rrr123355.github.io/CanvaPro/" },
+        { id: 19, name: "Kuku TV Pro", link: "https://arolinks.com/3LNvC4" },
+        { id: 20, name: "Alight Motion Pro", link: "https://arolinks.com/2Zj5eA" },
+        { id: 21, name: "Castle Pro", link: "https://go.arlinks.in/uKy5j" },
+        { id: 22, name: "Prime TV Pro", link: "https://go.arlinks.in/YQ6P" }
+    ];
+
+    let currentApps = JSON.parse(localStorage.getItem('mxcro_apps')) || defaultApps;
+    let isAdmin = false;
+    const adminPass = "ashishjaiswal8252568155";
+
+    function render() {
+        const container = document.getElementById('appGrid');
+        container.innerHTML = '';
+        currentApps.forEach(app => {
+            const div = document.createElement('div');
+            div.className = `card ${isAdmin ? 'is-admin' : ''}`;
+            div.innerHTML = `
+                <h3>${app.name}</h3>
+                <a href="${app.link}" class="dl-btn" target="_blank">GET PREMIUM</a>
+                <div class="edit-box">
+                    <input type="text" id="n-${app.id}" value="${app.name}"><br>
+                    <input type="text" id="l-${app.id}" value="${app.link}"><br>
+                    <button class="btn btn-host" style="width:100%" onclick="save(${app.id})">Save Update</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function login() {
+        if(document.getElementById('passInput').value === adminPass) {
+            isAdmin = true;
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('exitBtn').style.display = 'block';
+            render();
+        } else { alert("Wrong Password!"); }
+    }
+
+    function logout() {
+        isAdmin = false;
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('exitBtn').style.display = 'none';
+        render();
+    }
+
+    function save(id) {
+        const idx = currentApps.findIndex(a => a.id === id);
+        currentApps[idx].name = document.getElementById(`n-${id}`).value;
+        currentApps[idx].link = document.getElementById(`l-${id}`).value;
+        localStorage.setItem('mxcro_apps', JSON.stringify(currentApps));
+        alert("Saved! Aapke browser mein details update ho gayi hain.");
+        render();
+    }
+
+    render();
+</script>
+</body>
+</html>
